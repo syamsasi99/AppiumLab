@@ -5,13 +5,13 @@ public class DeviceModel {
   String udid;
   String platformName;
   String osVersion;
-  String manufacture;
+  String deviceName;
 
-  public DeviceModel(String udid, String platformName, String platformVersion, String manufacture){
+  public DeviceModel(String udid, String platformName, String platformVersion, String deviceName){
       this.udid=udid;
       this.platformName=platformName;
       this.osVersion =platformVersion;
-      this.manufacture=manufacture;
+      this.deviceName =deviceName;
   }
 
   public String getUdid() {
@@ -30,12 +30,12 @@ public class DeviceModel {
     this.platformName = platformName;
   }
 
-  public String getManufacture() {
-    return manufacture;
+  public String getDeviceName() {
+    return deviceName;
   }
 
-  public void setManufacture(String manufacture) {
-    this.manufacture = manufacture;
+  public void setDeviceName(String deviceName) {
+    this.deviceName = deviceName;
   }
 
   public String getOsVersion() {
@@ -48,6 +48,6 @@ public class DeviceModel {
 
     @Override
     public String toString() {
-        return String.format("udid: "+udid+" - "+"platformName: "+platformName+" - "+"osVersion: "+osVersion+" - "+"manufacture: "+manufacture);
+        return String.format("udid: "+udid+" - "+"platformName: "+platformName+" - "+"osVersion: "+osVersion+" - "+"deviceName: "+ deviceName);
     }
 }

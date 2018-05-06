@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface DeviceFinder {
 
-  List<DeviceModel> getAllRealDevices()throws Exception ;
+  List<DeviceModel> getAllRealDevices() throws Exception;
 
   List<DeviceModel> getAllVirtualDevices() throws Exception;
 
