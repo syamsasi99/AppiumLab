@@ -14,14 +14,24 @@ import java.util.Map;
 public class IOSDeviceFinder extends BaseDeviceFinder {
 
   @Override
-  public List<DeviceModel> getAllRealDevices() {
-    return null;
+  public List<DeviceModel> getAllRealDevices() throws Exception {
+    Map<String, List<DeviceModel>> allIOSDevices = getAllIOSDevices();
+    return allIOSDevices.get(AppiumLabConstants.REAL_DEVICE);
   }
 
   @Override
   public List<DeviceModel> getAllVirtualDevices() throws Exception {
-    Map<String, List<DeviceModel>> allIOSUdidMap = getAllIOSDevices();
-    return null;
+    Map<String, List<DeviceModel>> allIOSDevices = getAllIOSDevices();
+    return allIOSDevices.get(AppiumLabConstants.VIRTUAL_DEVICE);
+  }
+
+  @Override
+  public List<DeviceModel> getAllDevices() throws Exception {
+    List<DeviceModel> allDeviceList = new ArrayList<DeviceModel>();
+    allDeviceList.addAll(getAllRealDevices());
+    allDeviceList.addAll(getAllVirtualDevices());
+
+    return allDeviceList;
   }
 
   private Map<String, List<DeviceModel>> getAllIOSDevices() throws Exception {
@@ -33,14 +43,12 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
     // TOD: Do the same for adb
     try {
       instrumentsLog = DeviceUtility.exeCommand("instruments", "-s");
-      System.out.println("instrumentsLog=" + instrumentsLog);
     } catch (StartupException e) {
       throw new Exception("Please install XCODE and verify 'instruments -s' command");
     } catch (TimeoutException e) {
       instrumentsLog = DeviceUtility.exeCommand("instruments", "-s");
     }
 
-    System.out.println("instrumentsLog=" + instrumentsLog);
 
     String instrumentsLogStr[] = instrumentsLog.split("\n");
     for (int i = 0; i < instrumentsLogStr.length; i++) {
@@ -65,6 +73,10 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
 
       } else {
         // realIOSDeviceUdidList.add(androidUdid);
+
+        if (deviceNameTemp.contains("null")) {
+          continue;
+        }
         if (deviceNameTemp.contains("Known Templates")) {
           break;
         }
@@ -78,21 +90,19 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
 
         String[] allInfoArray = deviceNameTemp.split(" ");
         int len = allInfoArray.length;
-        System.out.println("len=" + len);
         String deviceName = "";
         try {
           if ((len - 1 <= 0)) {
             continue;
           }
-          if(len==3){
-            deviceName=allInfoArray[0];
-          }
-          else{
-          for (int j = 0; j < len - 3; j++) {
-            if (j < len - 3) {
-              deviceName += " " + allInfoArray[j];
+          if (len == 3) {
+            deviceName = allInfoArray[0];
+          } else {
+            for (int j = 0; j < len - 3; j++) {
+              if (j < len - 3) {
+                deviceName += " " + allInfoArray[j];
+              }
             }
-          }
           }
 
           String udid = allInfoArray[allInfoArray.length - 1];
@@ -110,37 +120,28 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
       }
     }
 
-    System.out.println("realIOSDeviceList=" + realIOSDeviceList);
-    System.out.println("simulatorList=" + simulatorList);
-
-
     Map<String, List<DeviceModel>> allIOSDeviceMap = new HashMap<String, List<DeviceModel>>();
     allIOSDeviceMap.put(AppiumLabConstants.REAL_DEVICE, realIOSDeviceList);
     allIOSDeviceMap.put(AppiumLabConstants.VIRTUAL_DEVICE, simulatorList);
     return allIOSDeviceMap;
   }
 
-  @Override
-  public List<DeviceModel> getAllDevices() throws Exception {
-    return null;
-  }
-
   public static void main(String[] args) {
     try {
-      /*
+
        System.out.println("*******************************************");
-       List<DeviceModel> allAndroidRealDeviceList = new AndroidDeviceFinder().getAllRealDevices();
-       System.out.println("allAndroidRealDeviceList=" + allAndroidRealDeviceList);
-      */
+       List<DeviceModel> allIOSRealDeviceList = new IOSDeviceFinder().getAllRealDevices();
+       System.out.println("allIOSRealDeviceList=" + allIOSRealDeviceList);
+
       System.out.println("*******************************************");
       List<DeviceModel> allIOSVirtualDeviceList = new IOSDeviceFinder().getAllVirtualDevices();
       System.out.println("allIOSVirtualDeviceList=" + allIOSVirtualDeviceList);
       System.out.println("*******************************************");
-      /*
-      List<DeviceModel> allAndroidDeviceList = new AndroidDeviceFinder().getAllDevices();
-      System.out.println("allAndroidDeviceList=" + allAndroidDeviceList);
+
+      List<DeviceModel> allIOSDeviceList = new IOSDeviceFinder().getAllDevices();
+      System.out.println("allIOSDeviceList=" + allIOSDeviceList);
       System.out.println("*******************************************");
-      */
+
 
     } catch (Exception e) {
       e.printStackTrace();
