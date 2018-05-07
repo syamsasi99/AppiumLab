@@ -1,5 +1,7 @@
 package io.github.syamsasi.appium_lab.utlity;
 
+import java.io.File;
+
 public interface AppiumLabConstants {
     String ADB="adb";
     String DEVICES="devices";
@@ -14,4 +16,6 @@ public interface AppiumLabConstants {
     String ADB_UDID_SEPARATOR ="-s";
 
 
+    String MAVEN = "maven";
+    String IOS = "iOS";
 }

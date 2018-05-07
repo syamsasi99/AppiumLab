@@ -7,11 +7,11 @@ public class DeviceModel {
   String osVersion;
   String deviceName;
 
-  public DeviceModel(String udid, String platformName, String platformVersion, String deviceName){
-      this.udid=udid;
-      this.platformName=platformName;
-      this.osVersion =platformVersion;
-      this.deviceName =deviceName;
+  public DeviceModel(String udid, String platformName, String platformVersion, String deviceName) {
+    this.udid = udid;
+    this.platformName = platformName;
+    this.osVersion = platformVersion;
+    this.deviceName = deviceName;
   }
 
   public String getUdid() {
@@ -46,8 +46,19 @@ public class DeviceModel {
     this.osVersion = osVersion;
   }
 
-    @Override
-    public String toString() {
-        return String.format("udid: "+udid+" - "+"platformName: "+platformName+" - "+"osVersion: "+osVersion+" - "+"deviceName: "+ deviceName);
-    }
+  @Override
+  public String toString() {
+    return String.format(
+        "udid: "
+            + udid
+            + " - "
+            + "platformName: "
+            + platformName
+            + " - "
+            + "osVersion: "
+            + osVersion
+            + " - "
+            + "deviceName: "
+            + deviceName);
+  }
 }
