@@ -73,6 +73,7 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
     List<String> emulatorUdidList = new ArrayList<String>();
     List<String> realAndroidDeviceUdidList = new ArrayList<String>();
 
+    DeviceUtility.restartAdbServer();
     String adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
 
     if (adbLog == null) {
@@ -80,7 +81,7 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
     }
     String adbStr[] = adbLog.split("\n");
     if (adbStr.length == 1) {
-      throw new Exception(WarningMessages.ANDROID_DEVICES_NOT_FOUND);
+      //throw new Exception(WarningMessages.ANDROID_DEVICES_NOT_FOUND);
     } else {
       for (int i = 1; i < adbStr.length; i++) {
         String deviceNameTemp = adbStr[i];

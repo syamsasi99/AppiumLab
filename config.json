@@ -1,5 +1,5 @@
 {
-  "mode": "parallel",
+  "mode": "distributed",
   "environment": "production",
   "distributed": {
     "android1": {
@@ -26,6 +26,6 @@
   "parallel": {
     "feature": "SignUp.feature,MayBeLater.feature",
     "include": "smoke1",
-    "platform": "both"
+    "platform": "ios"
   }
 }

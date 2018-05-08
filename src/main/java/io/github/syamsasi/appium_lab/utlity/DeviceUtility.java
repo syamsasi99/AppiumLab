@@ -12,4 +12,10 @@ public class DeviceUtility {
   public static void main(String[] args){
       exeCommand("adb","devices");
   }
+
+  public static void restartAdbServer() {
+    DeviceUtility.exeCommand(AppiumLabConstants.ADB, "kill-server");
+    DeviceUtility.exeCommand(AppiumLabConstants.ADB, "start-server");
+
+  }
 }

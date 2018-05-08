@@ -26,6 +26,7 @@ public class AppiumLabRunner {
     // Identify whether we need to to run android or or iOS or both
     Map<String, List<DeviceModel>> allPlatformDeviceMap = getAllRealDeviceInfo(configurationModel);
     System.out.println("allPlatformDeviceMap=" + allPlatformDeviceMap);
+    //TODO: Check the udid given in the config are connected to the machine if mode=distributed
   }
 
   private static Map<String, List<DeviceModel>> getAllRealDeviceInfo(
@@ -50,7 +51,7 @@ public class AppiumLabRunner {
       System.out.println("isIOS=" + isIOS);
       System.out.println("isAndroid=" + isAndroid);
 
-    } else {
+    } else if (configurationModel.getMode().equalsIgnoreCase("parallel")){
       Map<String, String> parlMap = configurationModel.getParallelMap();
       String platform = parlMap.get("platform");
       if (platform.equalsIgnoreCase("android")) {
@@ -76,6 +77,7 @@ public class AppiumLabRunner {
     if (isIOS) {
       allDeviceMap.put(AppiumLabConstants.IOS, new IOSDeviceFinder().getAllRealDevices());
     }
+
     if (isAndroid) {
       allDeviceMap.put(AppiumLabConstants.ANDROID, new AndroidDeviceFinder().getAllRealDevices());
     }
