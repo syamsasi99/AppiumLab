@@ -25,14 +25,15 @@ public class AppiumLabRunner {
 
   private static ArrayList<Integer> allPortList;
 
+  /*
   public static void main(String[] args) throws Exception {
     allPortList = new ArrayList<Integer>();
     String filePath = System.getProperty("user.dir") + "/config.json";
     Map<String, Object> buildMap = AppiumLabRunner.getAllBuildCommands(new File(filePath));
     System.out.println("buildMap="+buildMap);
-  }
+  }*/
 
-  private static Map<String, Object> getAllBuildCommands(File filePath) throws Exception {
+  public static Map<String, Object> getAllBuildCommands(File filePath) throws Exception {
     ConfigurationModel configurationModel = ConfigFileReader.readConfigJson(filePath);
     Map<String, List<DeviceModel>> allPlatformDeviceMap = getAllRealDeviceInfo(configurationModel);
     checkAllRealDevicesAreConnected(configurationModel, allPlatformDeviceMap);
