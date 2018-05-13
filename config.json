@@ -1,31 +1,25 @@
 {
-  "mode": "distributed",
+  "mode": "parallel",
   "environment": "production",
   "distributed": {
     "android1": {
-      "udid": "05157df5acf30119",
-      "feature": "Ads.feature,MayBeLater.feature,SoldSection.feature,ProductDetails.feature,LikeAProduct.feature,NewHomePage.feature,SearchBar.feature,SignIn.feature,SignOut.feature,Group.feature",
-      "include": "smoke"
-    },
-    "android2": {
-      "udid": "a0392b58",
-      "feature": "Coins.feature,FilterListing.feature,SignUp.feature,SimilarItems.feature,KeywordRecommendation.feature,SevenEleven.feature,SmartListing.feature,SmartSortAndFilter.feature",
-      "include": "smoke"
+      "udid": "ce0517154bcea8370d",
+      "feature": "One.feature,Two.feature",
+      "include": "smoke1",
+      "exclude": "skip1"
     },
     "ios1": {
-      "udid": "70d913309d4818be77304c4413730e0c8afd13d1",
-      "feature": "MayBeLater.feature,SoldSection.feature,Ads.feature,LikeAProduct.feature,ProductDetails.feature,SevenEleven.feature,SignIn.feature,SmartListing.feature,SmartSortAndFilter.feature",
-      "include": "smoke"
-    },
-    "ios2": {
-      "udid": "fd9b5875804ae20419b4e9cbffe915854fe50e4e",
-      "feature": "SignUp.feature,CarFilters.feature,FilterListing.feature,NewHomePage.feature,SearchBar.feature,SignOut.feature,Group.feature",
-      "include": "smoke"
+      "udid": "eadb1116a467acb95c8025436f932b852471d352",
+      "feature": "Three.feature,Four.feature",
+      "feature": "Three.feature,Four.feature",
+      "include": "smoke2",
+      "exclude": "skip2"
     }
   },
   "parallel": {
     "feature": "SignUp.feature,MayBeLater.feature",
-    "include": "smoke1",
-    "platform": "ios"
+    "include": "smoke",
+    "exclude": "skip",
+    "platform": "both"
   }
 }

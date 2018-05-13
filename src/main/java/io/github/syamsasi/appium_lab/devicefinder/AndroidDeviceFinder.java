@@ -1,15 +1,19 @@
 package io.github.syamsasi.appium_lab.devicefinder;
 
+import io.github.syamsasi.appium_lab.exception.AppiumLabException;
 import io.github.syamsasi.appium_lab.model.DeviceModel;
 import io.github.syamsasi.appium_lab.utlity.AppiumLabConstants;
 import io.github.syamsasi.appium_lab.utlity.DeviceUtility;
-import io.github.syamsasi.appium_lab.utlity.WarningMessages;
+import io.github.syamsasi.appium_lab.constants.WarningMessages;
+import org.buildobjects.process.StartupException;
+import org.buildobjects.process.TimeoutException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Created by Syam Sasi on May, 2018 */
 public class AndroidDeviceFinder extends BaseDeviceFinder {
 
   @Override
@@ -74,15 +78,21 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
     List<String> realAndroidDeviceUdidList = new ArrayList<String>();
 
     DeviceUtility.restartAdbServer();
-    String adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
-
+    String adbLog = null;
+    try {
+      adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
+    } catch (StartupException e) {
+      throw new AppiumLabException("Please install ADB");
+    } catch (TimeoutException e) {
+      adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
+    } catch (Exception e) {
+      adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
+    }
     if (adbLog == null) {
       throw new Exception(WarningMessages.ADB_NOT_FOUND);
     }
     String adbStr[] = adbLog.split("\n");
-    if (adbStr.length == 1) {
-      //throw new Exception(WarningMessages.ANDROID_DEVICES_NOT_FOUND);
-    } else {
+    if (adbStr.length > 1) {
       for (int i = 1; i < adbStr.length; i++) {
         String deviceNameTemp = adbStr[i];
         String[] deviceNameStr = deviceNameTemp.split("device");
@@ -99,24 +109,5 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
     allAndroidUdidMap.put(AppiumLabConstants.REAL_DEVICE, realAndroidDeviceUdidList);
     allAndroidUdidMap.put(AppiumLabConstants.VIRTUAL_DEVICE, emulatorUdidList);
     return allAndroidUdidMap;
-  }
-
-  public static void main(String[] args) {
-    try {
-      System.out.println("*******************************************");
-      List<DeviceModel> allAndroidRealDeviceList = new AndroidDeviceFinder().getAllRealDevices();
-      System.out.println("allAndroidRealDeviceList=" + allAndroidRealDeviceList);
-      System.out.println("*******************************************");
-      List<DeviceModel> allAndroidVirtualDeviceList =
-          new AndroidDeviceFinder().getAllVirtualDevices();
-      System.out.println("allAndroidVirtualDeviceList=" + allAndroidVirtualDeviceList);
-      System.out.println("*******************************************");
-      List<DeviceModel> allAndroidDeviceList = new AndroidDeviceFinder().getAllDevices();
-      System.out.println("allAndroidDeviceList=" + allAndroidDeviceList);
-      System.out.println("*******************************************");
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 }

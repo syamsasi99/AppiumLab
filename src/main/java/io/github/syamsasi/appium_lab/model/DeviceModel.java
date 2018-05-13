@@ -1,5 +1,6 @@
 package io.github.syamsasi.appium_lab.model;
 
+/** Created by Syam Sasi on May, 2018 */
 public class DeviceModel {
 
   String udid;
@@ -46,19 +47,14 @@ public class DeviceModel {
     this.osVersion = osVersion;
   }
 
+
   @Override
   public String toString() {
-    return String.format(
-        "udid: "
-            + udid
-            + " - "
-            + "platformName: "
-            + platformName
-            + " - "
-            + "osVersion: "
-            + osVersion
-            + " - "
-            + "deviceName: "
-            + deviceName);
+    return "DeviceModel{" +
+            "udid='" + udid + '\'' +
+            ", platformName='" + platformName + '\'' +
+            ", osVersion='" + osVersion + '\'' +
+            ", deviceName='" + deviceName + '\'' +
+            '}';
   }
 }

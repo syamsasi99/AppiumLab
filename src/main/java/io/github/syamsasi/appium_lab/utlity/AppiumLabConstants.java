@@ -1,7 +1,7 @@
 package io.github.syamsasi.appium_lab.utlity;
 
-import java.io.File;
 
+/** Created by Syam Sasi on May, 2018 */
 public interface AppiumLabConstants {
     String ADB="adb";
     String DEVICES="devices";
@@ -18,4 +18,7 @@ public interface AppiumLabConstants {
 
     String MAVEN = "maven";
     String IOS = "iOS";
+
+    String ANDROID_REAL_DEVICES="ANDROID_REAL_DEVICE";
+    String IOS_REAL_DEVICES="IOS_REAL_DEVICE";
 }

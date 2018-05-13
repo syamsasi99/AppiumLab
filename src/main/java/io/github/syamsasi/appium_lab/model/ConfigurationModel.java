@@ -1,13 +1,13 @@
 package io.github.syamsasi.appium_lab.model;
 
-import java.util.List;
 import java.util.Map;
 
+/** Created by Syam Sasi on May, 2018 */
 public class ConfigurationModel {
 
   private String mode;
   private String environment;
-  private Map<String, List<String>> distributedMap;
+  private Map<String, Map<String, Object>> distributedMap;
   private Map<String, String> parallelMap;
 
   public String getMode() {
@@ -26,11 +26,11 @@ public class ConfigurationModel {
     this.environment = environment;
   }
 
-  public Map<String, List<String>> getDistributedMap() {
+  public Map<String, Map<String, Object>> getDistributedMap() {
     return distributedMap;
   }
 
-  public void setDistributedMap(Map<String, List<String>> distributedMap) {
+  public void setDistributedMap(Map<String, Map<String, Object>> distributedMap) {
     this.distributedMap = distributedMap;
   }
 
@@ -44,17 +44,11 @@ public class ConfigurationModel {
 
   @Override
   public String toString() {
-    return String.format(
-        "mode: "
-            + mode
-            + " - "
-            + "environment: "
-            + environment
-            + " - "
-            + "distributedMap: "
-            + distributedMap
-            + " - "
-            + "parallelMap: "
-            + parallelMap);
+    return "ConfigurationModel{" +
+            "mode='" + mode + '\'' +
+            ", environment='" + environment + '\'' +
+            ", distributedMap=" + distributedMap +
+            ", parallelMap=" + parallelMap +
+            '}';
   }
 }

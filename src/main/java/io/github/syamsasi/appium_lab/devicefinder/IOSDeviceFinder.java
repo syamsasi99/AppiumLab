@@ -1,5 +1,6 @@
 package io.github.syamsasi.appium_lab.devicefinder;
 
+import io.github.syamsasi.appium_lab.exception.AppiumLabException;
 import io.github.syamsasi.appium_lab.model.DeviceModel;
 import io.github.syamsasi.appium_lab.utlity.AppiumLabConstants;
 import io.github.syamsasi.appium_lab.utlity.DeviceUtility;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/** Created by Syam Sasi on May, 2018 */
 public class IOSDeviceFinder extends BaseDeviceFinder {
 
   @Override
@@ -40,15 +42,15 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
     List<DeviceModel> realIOSDeviceList = new ArrayList<DeviceModel>();
 
     String instrumentsLog = null;
-    // TOD: Do the same for adb
     try {
       instrumentsLog = DeviceUtility.exeCommand("instruments", "-s");
     } catch (StartupException e) {
-      throw new Exception("Please install XCODE and verify 'instruments -s' command");
+      throw new AppiumLabException("Please install XCODE and verify 'instruments -s' command");
     } catch (TimeoutException e) {
       instrumentsLog = DeviceUtility.exeCommand("instruments", "-s");
+    } catch (Exception e) {
+      instrumentsLog = DeviceUtility.exeCommand("instruments", "-s");
     }
-
 
     String instrumentsLogStr[] = instrumentsLog.split("\n");
     for (int i = 0; i < instrumentsLogStr.length; i++) {
@@ -124,27 +126,5 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
     allIOSDeviceMap.put(AppiumLabConstants.REAL_DEVICE, realIOSDeviceList);
     allIOSDeviceMap.put(AppiumLabConstants.VIRTUAL_DEVICE, simulatorList);
     return allIOSDeviceMap;
-  }
-
-  public static void main(String[] args) {
-    try {
-
-       System.out.println("*******************************************");
-       List<DeviceModel> allIOSRealDeviceList = new IOSDeviceFinder().getAllRealDevices();
-       System.out.println("allIOSRealDeviceList=" + allIOSRealDeviceList);
-
-      System.out.println("*******************************************");
-      List<DeviceModel> allIOSVirtualDeviceList = new IOSDeviceFinder().getAllVirtualDevices();
-      System.out.println("allIOSVirtualDeviceList=" + allIOSVirtualDeviceList);
-      System.out.println("*******************************************");
-
-      List<DeviceModel> allIOSDeviceList = new IOSDeviceFinder().getAllDevices();
-      System.out.println("allIOSDeviceList=" + allIOSDeviceList);
-      System.out.println("*******************************************");
-
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 }
