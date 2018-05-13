@@ -17,7 +17,7 @@ import java.util.Map;
 public class AndroidDeviceFinder extends BaseDeviceFinder {
 
   @Override
-  public List<DeviceModel> getAllRealDevices() throws Exception {
+  public List<DeviceModel> getAllRealDevices() throws AppiumLabException {
     Map<String, List<String>> allAndroidUdidMap = getAllAndroidUdids();
     List<String> realDeviceAndroidUdidList = allAndroidUdidMap.get(AppiumLabConstants.REAL_DEVICE);
     return getDeviceInfoListFromUdidList(realDeviceAndroidUdidList);
@@ -73,7 +73,7 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
     return allDeviceList;
   }
 
-  private Map<String, List<String>> getAllAndroidUdids() throws Exception {
+  private Map<String, List<String>> getAllAndroidUdids() throws AppiumLabException {
     List<String> emulatorUdidList = new ArrayList<String>();
     List<String> realAndroidDeviceUdidList = new ArrayList<String>();
 
@@ -89,7 +89,7 @@ public class AndroidDeviceFinder extends BaseDeviceFinder {
       adbLog = DeviceUtility.exeCommand(AppiumLabConstants.ADB, AppiumLabConstants.DEVICES);
     }
     if (adbLog == null) {
-      throw new Exception(WarningMessages.ADB_NOT_FOUND);
+      throw new AppiumLabException(WarningMessages.ADB_NOT_FOUND);
     }
     String adbStr[] = adbLog.split("\n");
     if (adbStr.length > 1) {

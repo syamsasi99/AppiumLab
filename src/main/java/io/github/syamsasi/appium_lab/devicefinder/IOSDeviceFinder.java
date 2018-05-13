@@ -16,7 +16,7 @@ import java.util.Map;
 public class IOSDeviceFinder extends BaseDeviceFinder {
 
   @Override
-  public List<DeviceModel> getAllRealDevices() throws Exception {
+  public List<DeviceModel> getAllRealDevices() throws AppiumLabException {
     Map<String, List<DeviceModel>> allIOSDevices = getAllIOSDevices();
     return allIOSDevices.get(AppiumLabConstants.REAL_DEVICE);
   }
@@ -36,7 +36,7 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
     return allDeviceList;
   }
 
-  private Map<String, List<DeviceModel>> getAllIOSDevices() throws Exception {
+  private Map<String, List<DeviceModel>> getAllIOSDevices() throws AppiumLabException {
 
     List<DeviceModel> simulatorList = new ArrayList<DeviceModel>();
     List<DeviceModel> realIOSDeviceList = new ArrayList<DeviceModel>();

@@ -19,31 +19,41 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /** Created by Syam Sasi on May, 2018 */
 public class AppiumLabRunner {
+  private static final Logger LOGGER = Logger.getLogger(AppiumLabRunner.class.getName());
 
   private static ArrayList<Integer> allPortList;
 
-  /*
-  public static void main(String[] args) throws Exception {
+  /**
+   * Returns all the attributes needed for parallel/ditrubuted run
+   *
+   * @param configFile -> The config json file
+   * @return buildAttributesMap
+   * @throws Exception
+   */
+  public static Map<String, Object> getAllBuildAttributesFromConfigFile(File configFile)
+      throws AppiumLabException {
+    LOGGER.info("Entering getAllBuildAttributesFromConfigFile()");
     allPortList = new ArrayList<Integer>();
-    String filePath = System.getProperty("user.dir") + "/config.json";
-    Map<String, Object> buildMap = AppiumLabRunner.getAllBuildCommands(new File(filePath));
-    System.out.println("buildMap="+buildMap);
-  }*/
-
-  public static Map<String, Object> getAllBuildCommands(File filePath) throws Exception {
-    ConfigurationModel configurationModel = ConfigFileReader.readConfigJson(filePath);
+    ConfigurationModel configurationModel = ConfigFileReader.readConfigJson(configFile);
+    LOGGER.info("configurationModel="+configurationModel);
     Map<String, List<DeviceModel>> allPlatformDeviceMap = getAllRealDeviceInfo(configurationModel);
+    LOGGER.info("allPlatformDeviceMap="+allPlatformDeviceMap);
     checkAllRealDevicesAreConnected(configurationModel, allPlatformDeviceMap);
-    Map<String, Object> buildMap = generateBuildCommands(configurationModel, allPlatformDeviceMap);
-    return buildMap;
+    Map<String, Object> buildAttributesMap =
+        generateBuildCommands(configurationModel, allPlatformDeviceMap);
+    LOGGER.info("buildAttributesMap="+buildAttributesMap);
+    LOGGER.info("Exiting getAllBuildAttributesFromConfigFile()");
+
+    return buildAttributesMap;
   }
 
   private static Map<String, Object> generateBuildCommands(
       ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)
-      throws Exception {
+      throws AppiumLabException {
 
     Map<String, Object> deviceSpecificData = new LinkedHashMap<String, Object>();
 
@@ -113,11 +123,20 @@ public class AppiumLabRunner {
       List<DeviceModel> allIOSDeviceList = null;
       if (runningPlatform.equalsIgnoreCase(Platform.ANDROID.name())) {
         allAndroidDeviceList = allPlatformDeviceMap.get(DeviceType.ANDROID_REAL_DEVICE.name());
+        if(allAndroidDeviceList==null || allAndroidDeviceList.size()==0){
+          throw new AppiumLabException("No Android devices are connected!!");
+        }
       } else if (runningPlatform.equalsIgnoreCase(Platform.IOS.name())) {
         allIOSDeviceList = allPlatformDeviceMap.get(DeviceType.IOS_REAL_DEVICE.name());
+        if(allIOSDeviceList==null || allIOSDeviceList.size()==0){
+          throw new AppiumLabException("No iOS devices are connected!!");
+        }
       } else if (runningPlatform.equalsIgnoreCase(Platform.BOTH.name())) {
         allAndroidDeviceList = allPlatformDeviceMap.get(DeviceType.ANDROID_REAL_DEVICE.name());
         allIOSDeviceList = allPlatformDeviceMap.get(DeviceType.IOS_REAL_DEVICE.name());
+        if(allAndroidDeviceList.size()==0 && allIOSDeviceList.size()==0){
+          throw new AppiumLabException("Neither iOS nor android devices are connected!!");
+        }
       } else {
         throw new AppiumLabException(
             "The platform configuration "
@@ -130,6 +149,7 @@ public class AppiumLabRunner {
                 + " or "
                 + Platform.BOTH.name().toLowerCase());
       }
+
 
       if (allAndroidDeviceList != null) {
         for (DeviceModel deviceModel : allAndroidDeviceList) {
@@ -277,7 +297,7 @@ public class AppiumLabRunner {
   }
 
   private static String getPlatformNameFromUdid(String udId, List<DeviceModel> allDeviceModelList)
-      throws Exception {
+      throws AppiumLabException {
     for (DeviceModel model : allDeviceModelList) {
       String platformName = null;
       if (model.getUdid().equalsIgnoreCase(udId)) {
@@ -289,7 +309,7 @@ public class AppiumLabRunner {
   }
 
   private static String getPlatformVersionFromUdid(
-      String udId, List<DeviceModel> allDeviceModelList) throws Exception {
+      String udId, List<DeviceModel> allDeviceModelList) throws AppiumLabException {
     for (DeviceModel model : allDeviceModelList) {
       String platformVersion = null;
       if (model.getUdid().equalsIgnoreCase(udId)) {
@@ -307,7 +327,7 @@ public class AppiumLabRunner {
 
   private static void checkAllRealDevicesAreConnected(
       ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)
-      throws Exception {
+      throws AppiumLabException {
     if (configurationModel.getMode().equalsIgnoreCase(RunType.DISTRIBUTED.name())) {
       Map<String, Map<String, Object>> distMap = configurationModel.getDistributedMap();
       List<String> allNodes = new ArrayList<String>(distMap.keySet());
@@ -318,7 +338,7 @@ public class AppiumLabRunner {
 
           if (!isTheDevicePresent(
               node, allPlatformDeviceMap, distMap, DeviceType.ANDROID_REAL_DEVICE.name())) {
-            throw new Exception(
+            throw new AppiumLabException(
                 "The android device with udid " + udidFromConfigFile + " is not connected!!");
           }
 
@@ -363,10 +383,10 @@ public class AppiumLabRunner {
   }
 
   private static Map<String, List<DeviceModel>> getAllRealDeviceInfo(
-      ConfigurationModel configurationModel) throws Exception {
+      ConfigurationModel configurationModel) throws AppiumLabException {
     boolean isIOS = false;
     boolean isAndroid = false;
-    if (configurationModel.getMode().equalsIgnoreCase("distributed")) {
+    if (configurationModel.getMode().equalsIgnoreCase(RunType.DISTRIBUTED.name().toLowerCase())) {
       List<String> allNodes = getAllDistributionNodes(configurationModel);
       for (String node : allNodes) {
         if ((node.toLowerCase().startsWith(Platform.ANDROID.name().toLowerCase()))
@@ -380,9 +400,11 @@ public class AppiumLabRunner {
         }
       }
 
-    } else if (configurationModel.getMode().equalsIgnoreCase("parallel")) {
+    } else if (configurationModel
+        .getMode()
+        .equalsIgnoreCase(RunType.PARALLEL.name().toLowerCase())) {
       Map<String, String> parlMap = configurationModel.getParallelMap();
-      String platform = parlMap.get("platform");
+      String platform = parlMap.get(ConfigElement.PLATFORM.name().toLowerCase());
       if (platform == null) {
         throw new AppiumLabException("The platform configuration " + platform + " is invalid!!");
       }
