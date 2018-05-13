@@ -6,7 +6,7 @@
 
     <groupId>io.github.syamsasi99</groupId>
     <artifactId>appium_lab</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>AppiumLab</name>
     <description>AppiumLab stands for Appium Test Distributor.</description>
