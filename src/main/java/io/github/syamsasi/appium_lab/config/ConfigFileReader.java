@@ -61,7 +61,9 @@ public class ConfigFileReader {
       } catch (IOException e) {
         throw new AppiumLabException(e.getMessage());
       }
-      LOGGER.info("DistributedMap= " + distributedMap);
+      LOGGER.info("distributedMap= " + distributedMap);
+
+      //TODO: Parse the data and form the data model here
       configurationModel.setDistributedMap(distributedMap);
     } else if (mode.equalsIgnoreCase(RunType.PARALLEL.name())) {
       Map<String, String> parallelMap = parseParallelData(jsonObject);
