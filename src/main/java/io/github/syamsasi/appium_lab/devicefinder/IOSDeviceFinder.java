@@ -2,7 +2,7 @@ package io.github.syamsasi.appium_lab.devicefinder;
 
 import io.github.syamsasi.appium_lab.exception.AppiumLabException;
 import io.github.syamsasi.appium_lab.model.DeviceModel;
-import io.github.syamsasi.appium_lab.utlity.AppiumLabConstants;
+import io.github.syamsasi.appium_lab.constants.AppiumLabConstants;
 import io.github.syamsasi.appium_lab.utlity.DeviceUtility;
 import org.buildobjects.process.StartupException;
 import org.buildobjects.process.TimeoutException;

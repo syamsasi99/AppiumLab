@@ -8,6 +8,10 @@ public class AppiumLabException extends Exception {
     super(message);
   }
 
+  public AppiumLabException(String message, String arg) {
+    super(message.replace("{}", arg));
+  }
+
   public AppiumLabException(Throwable cause) {
     super(cause);
   }

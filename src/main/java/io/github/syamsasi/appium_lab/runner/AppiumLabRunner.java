@@ -11,7 +11,6 @@ import io.github.syamsasi.appium_lab.exception.AppiumLabException;
 import io.github.syamsasi.appium_lab.model.BuildModel;
 import io.github.syamsasi.appium_lab.model.ConfigurationModel;
 import io.github.syamsasi.appium_lab.model.DeviceModel;
-import io.github.syamsasi.appium_lab.utlity.AppiumLabConstants;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class AppiumLabRunner {
   private static ArrayList<Integer> allPortList;
 
   /**
-   * Returns all the attributes needed for parallel/ditrubuted run
+   * Returns all the attributes needed for parallel/ditributed run
    *
    * @param configFile -> The config json file
    * @return buildAttributesMap
@@ -50,6 +49,30 @@ public class AppiumLabRunner {
 
     return buildAttributesMap;
   }
+
+  /**
+   * Returns all the attributes needed for parallel/ditributed run
+   *
+   * @param configurationModel -> The config json file
+   * @return buildAttributesMap
+   * @throws Exception
+   */
+  public static Map<String, Object> getAllBuildAttributesFromConfigModel( ConfigurationModel configurationModel)
+          throws AppiumLabException {
+    LOGGER.info("Entering getAllBuildAttributesFromConfigModel()");
+    allPortList = new ArrayList<Integer>();
+    LOGGER.info("configurationModel="+configurationModel);
+    Map<String, List<DeviceModel>> allPlatformDeviceMap = getAllRealDeviceInfo(configurationModel);
+    LOGGER.info("allPlatformDeviceMap="+allPlatformDeviceMap);
+    checkAllRealDevicesAreConnected(configurationModel, allPlatformDeviceMap);
+    Map<String, Object> buildAttributesMap =
+            generateBuildCommands(configurationModel, allPlatformDeviceMap);
+    LOGGER.info("buildAttributesMap="+buildAttributesMap);
+    LOGGER.info("Exiting getAllBuildAttributesFromConfigFile()");
+
+    return buildAttributesMap;
+  }
+
 
   private static Map<String, Object> generateBuildCommands(
       ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)
