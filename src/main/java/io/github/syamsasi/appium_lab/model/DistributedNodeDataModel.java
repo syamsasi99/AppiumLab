@@ -6,7 +6,15 @@ import java.util.Map;
 public class DistributedNodeDataModel {
 
   private Map<String, DistributedAttributeDataModel> androidNodeMap;
+
   private Map<String, DistributedAttributeDataModel> iOSNodeMap;
+
+  public DistributedNodeDataModel(
+      Map<String, DistributedAttributeDataModel> androidNodeMap,
+      Map<String, DistributedAttributeDataModel> iOSNodeMap) {
+    this.androidNodeMap = androidNodeMap;
+    this.iOSNodeMap = iOSNodeMap;
+  }
 
   public Map<String, DistributedAttributeDataModel> getAndroidNodeMap() {
     return androidNodeMap;

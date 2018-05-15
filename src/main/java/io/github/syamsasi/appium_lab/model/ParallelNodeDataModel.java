@@ -11,6 +11,13 @@ public class ParallelNodeDataModel {
   private List<String> excludeTags;
   private String platformType;
 
+  public ParallelNodeDataModel(List<String> testFiles, List<String> includeTags, List<String> excludeTags, String platformType) {
+    this.testFiles = testFiles;
+    this.includeTags = includeTags;
+    this.excludeTags = excludeTags;
+    this.platformType = platformType;
+  }
+
   public List<String> getTestFiles() {
     return testFiles;
   }
@@ -41,5 +48,15 @@ public class ParallelNodeDataModel {
 
   public void setPlatformType(String platformType) {
     this.platformType = platformType;
+  }
+
+  @Override
+  public String toString() {
+    return "ParallelNodeDataModel{" +
+            "testFiles=" + testFiles +
+            ", includeTags=" + includeTags +
+            ", excludeTags=" + excludeTags +
+            ", platformType='" + platformType + '\'' +
+            '}';
   }
 }

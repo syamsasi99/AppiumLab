@@ -9,6 +9,13 @@ public class DistributedAttributeDataModel {
   private List<String> includeTags;
   private List<String> excludeTags;
 
+  public DistributedAttributeDataModel(String udId, List<String> testFiles, List<String> includeTags, List<String> excludeTags) {
+    this.udId = udId;
+    this.testFiles = testFiles;
+    this.includeTags = includeTags;
+    this.excludeTags = excludeTags;
+  }
+
   public String getUdId() {
     return udId;
   }

@@ -21,4 +21,5 @@ public interface AppiumLabConstants {
 
     String ANDROID_REAL_DEVICES="ANDROID_REAL_DEVICE";
     String IOS_REAL_DEVICES="IOS_REAL_DEVICE";
+    String COMMA_SEPERATOR = ",";
 }

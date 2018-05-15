@@ -67,6 +67,8 @@ public class ConfigurationModel {
             ", environment='" + environment + '\'' +
             ", parallelNodeDataModel=" + parallelNodeDataModel +
             ", distributedNodeDataModel=" + distributedNodeDataModel +
+            ", distributedMap=" + distributedMap +
+            ", parallelMap=" + parallelMap +
             '}';
   }
 }

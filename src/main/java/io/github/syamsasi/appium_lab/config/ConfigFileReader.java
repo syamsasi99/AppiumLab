@@ -6,6 +6,8 @@ import io.github.syamsasi.appium_lab.constants.ConfigElement;
 import io.github.syamsasi.appium_lab.constants.RunType;
 import io.github.syamsasi.appium_lab.exception.AppiumLabException;
 import io.github.syamsasi.appium_lab.model.ConfigurationModel;
+import io.github.syamsasi.appium_lab.model.DistributedNodeDataModel;
+import io.github.syamsasi.appium_lab.model.ParallelNodeDataModel;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -21,12 +23,15 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /** Created by Syam Sasi on May, 2018 */
-public class ConfigFileReader {
+public final class ConfigFileReader {
 
   private static final Logger LOGGER = Logger.getLogger(ConfigFileReader.class.getName());
 
+  private ConfigFileReader() {}
+
   /**
    * Reading the config json file and return the ConfigurationModel
+   *
    * @param file -> The config json file
    * @return ConfigurationModel
    * @throws IOException
@@ -40,18 +45,20 @@ public class ConfigFileReader {
     try {
       obj = parser.parse(new FileReader(file));
     } catch (IOException e) {
-      throw new AppiumLabException(e.getMessage());
+      throw new AppiumLabException("Damaged Config File!!");
     } catch (ParseException e) {
-      throw new AppiumLabException(e.getMessage());
+      throw new AppiumLabException("Invalid config Json!!");
     }
     JSONObject jsonObject = (JSONObject) obj;
     ConfigurationModel configurationModel = new ConfigurationModel();
     String mode = (String) jsonObject.get(ConfigElement.MODE.name().toLowerCase());
     LOGGER.info("Running mode= " + mode);
+    ConfigValidator.validateMode(mode);
     configurationModel.setMode(mode);
 
     String environment = (String) jsonObject.get(ConfigElement.ENVIRONMENT.name().toLowerCase());
     LOGGER.info("Running environment= " + environment);
+    ConfigValidator.validateEnvironment(environment);
     configurationModel.setEnvironment(environment);
 
     if (mode.equalsIgnoreCase(RunType.DISTRIBUTED.name())) {
@@ -62,13 +69,19 @@ public class ConfigFileReader {
         throw new AppiumLabException(e.getMessage());
       }
       LOGGER.info("distributedMap= " + distributedMap);
-
-      //TODO: Parse the data and form the data model here
+      DistributedNodeDataModel distributedNodeDataModel =
+          ConfigValidator.validateDistributedData(distributedMap);
+      configurationModel.setDistributedNodeDataModel(distributedNodeDataModel);
       configurationModel.setDistributedMap(distributedMap);
     } else if (mode.equalsIgnoreCase(RunType.PARALLEL.name())) {
       Map<String, String> parallelMap = parseParallelData(jsonObject);
+      ParallelNodeDataModel parallelNodeDataModel =
+          ConfigValidator.validateParallelDataMap(parallelMap);
       LOGGER.info("ParallelMap= " + parallelMap);
+      LOGGER.info("parallelNodeDataModel= " + parallelNodeDataModel);
+
       configurationModel.setParallelMap(parallelMap);
+      configurationModel.setParallelNodeDataModel(parallelNodeDataModel);
     }
     LOGGER.info("configurationModel=" + configurationModel);
 
@@ -76,15 +89,14 @@ public class ConfigFileReader {
     return configurationModel;
   }
 
-  private static Map<String, Map<String, Object>> parseDistributedData(JSONObject jsonObject)
-          throws IOException, AppiumLabException {
+  protected static Map<String, Map<String, Object>> parseDistributedData(JSONObject jsonObject)
+      throws IOException, AppiumLabException {
     LOGGER.info("Entering parseDistributedData()");
 
     Map distributedMap =
         (Map<String, List<String>>) jsonObject.get(RunType.DISTRIBUTED.name().toLowerCase());
     LOGGER.info("distributedMap=" + distributedMap);
-    Map<String, Map<String, Object>> distributedMapTmp =
-        new LinkedHashMap<String, Map<String, Object>>();
+    Map<String, Map<String, Object>> distributedMapTmp = new LinkedHashMap<>();
     List<String> allNodes = new ArrayList<String>(distributedMap.keySet());
     for (String node : allNodes) {
       JSONObject jsonList = (JSONObject) distributedMap.get(node);
@@ -92,7 +104,7 @@ public class ConfigFileReader {
       try {
         jsonMap = convertToJavaMap(jsonList);
       } catch (AppiumLabException e) {
-       throw new AppiumLabException(e.getMessage());
+        throw new AppiumLabException(e.getMessage());
       }
       distributedMapTmp.put(node, jsonMap);
     }
@@ -102,7 +114,8 @@ public class ConfigFileReader {
     return distributedMapTmp;
   }
 
-  private static Map<String, Object> convertToJavaMap(JSONObject jsonList) throws AppiumLabException {
+  protected static Map<String, Object> convertToJavaMap(JSONObject jsonList)
+      throws AppiumLabException {
     LOGGER.info("Entering convertToJavaMap()");
     LOGGER.info("jsonList=" + jsonList);
 
@@ -120,7 +133,7 @@ public class ConfigFileReader {
     return jsonMap;
   }
 
-  private static Map<String, String> parseParallelData(JSONObject jsonObject) {
+  protected static Map<String, String> parseParallelData(JSONObject jsonObject) {
     LOGGER.info("Entering parseParallelData()");
     LOGGER.info("jsonObject=" + jsonObject);
     Map parallelMap = (Map<String, String>) jsonObject.get(RunType.PARALLEL.name().toLowerCase());
