@@ -11,33 +11,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 /** Created by Syam Sasi on May, 2018 */
-public class IOSDeviceFinder extends BaseDeviceFinder {
+public class IOSDeviceFinder {
+  private static final Logger LOGGER = Logger.getLogger(IOSDeviceFinder.class.getName());
 
-  @Override
   public List<DeviceModel> getAllRealDevices() throws AppiumLabException {
+    LOGGER.info("Entering in getAllRealDevices()");
     Map<String, List<DeviceModel>> allIOSDevices = getAllIOSDevices();
+    LOGGER.info("allIOSDevices=" + allIOSDevices);
+    LOGGER.info("Leaving getAllRealDevices()");
     return allIOSDevices.get(AppiumLabConstants.REAL_DEVICE);
   }
 
-  @Override
   public List<DeviceModel> getAllVirtualDevices() throws Exception {
+    LOGGER.info("Entering in getAllVirtualDevices()");
     Map<String, List<DeviceModel>> allIOSDevices = getAllIOSDevices();
+    LOGGER.info("allIOSDevices=" + allIOSDevices);
+    LOGGER.info("Leaving getAllVirtualDevices()");
     return allIOSDevices.get(AppiumLabConstants.VIRTUAL_DEVICE);
   }
 
-  @Override
   public List<DeviceModel> getAllDevices() throws Exception {
+    LOGGER.info("Entering in getAllDevices()");
     List<DeviceModel> allDeviceList = new ArrayList<DeviceModel>();
     allDeviceList.addAll(getAllRealDevices());
     allDeviceList.addAll(getAllVirtualDevices());
-
+    LOGGER.info("allDeviceList=" + allDeviceList);
+    LOGGER.info("Leaving getAllDevices()");
     return allDeviceList;
   }
 
   private Map<String, List<DeviceModel>> getAllIOSDevices() throws AppiumLabException {
-
+    LOGGER.info("Entering in getAllIOSDevices()");
     List<DeviceModel> simulatorList = new ArrayList<DeviceModel>();
     List<DeviceModel> realIOSDeviceList = new ArrayList<DeviceModel>();
 
@@ -125,6 +132,9 @@ public class IOSDeviceFinder extends BaseDeviceFinder {
     Map<String, List<DeviceModel>> allIOSDeviceMap = new HashMap<String, List<DeviceModel>>();
     allIOSDeviceMap.put(AppiumLabConstants.REAL_DEVICE, realIOSDeviceList);
     allIOSDeviceMap.put(AppiumLabConstants.VIRTUAL_DEVICE, simulatorList);
+    LOGGER.info("allIOSDeviceMap=" + allIOSDeviceMap);
+    LOGGER.info("Leaving getAllIOSDevices()");
+
     return allIOSDeviceMap;
   }
 }

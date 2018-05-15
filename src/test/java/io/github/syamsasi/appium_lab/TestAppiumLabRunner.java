@@ -22,7 +22,7 @@ public class TestAppiumLabRunner {
 
     String configFilePath = System.getProperty("user.dir") + "/config.json";
     Map<String, Object> buildMap = null;
-      buildMap = AppiumLabRunner.getAllBuildAttributesFromConfigFile(new File(configFilePath));
+    buildMap = AppiumLabRunner.getAllBuildAttributesFromConfigFile(new File(configFilePath));
   }
 
   @AfterClass

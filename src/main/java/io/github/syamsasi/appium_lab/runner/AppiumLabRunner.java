@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /** Created by Syam Sasi on May, 2018 */
@@ -38,12 +39,13 @@ public class AppiumLabRunner {
    */
   public static Map<String, Object> getAllBuildAttributesFromConfigFile(File configFile)
       throws AppiumLabException {
-    LOGGER.info("Entering getAllBuildAttributesFromConfigFile()");
+    LogManager.getLogManager().reset();
+
+    LOGGER.info("Entering in getAllBuildAttributesFromConfigFile(File configFile)");
+    LOGGER.info("configFile=" + configFile);
     allPortList = new ArrayList<Integer>();
     ConfigurationModel configurationModel = ConfigFileReader.readConfigJson(configFile);
-    LOGGER.info("configurationModel=" + configurationModel);
     Map<String, List<DeviceModel>> allRealDeviceMap = getAllRealDeviceInfo(configurationModel);
-    LOGGER.info("allRealDeviceMap=" + allRealDeviceMap);
     checkAllRealDevicesAreConnected(configurationModel, allRealDeviceMap);
     Map<String, Object> buildAttributesMap =
         generateBuildCommands(configurationModel, allRealDeviceMap);
@@ -62,9 +64,13 @@ public class AppiumLabRunner {
    */
   public static Map<String, Object> getAllBuildAttributesFromConfigModel(
       ConfigurationModel configurationModel) throws AppiumLabException {
-    LOGGER.info("Entering getAllBuildAttributesFromConfigModel()");
-    allPortList = new ArrayList<Integer>();
+    LogManager.getLogManager().reset();
+
+    LOGGER.info(
+        "Entering in getAllBuildAttributesFromConfigModel(ConfigurationModel configurationModel)");
     LOGGER.info("configurationModel=" + configurationModel);
+
+    allPortList = new ArrayList<Integer>();
     Map<String, List<DeviceModel>> allPlatformDeviceMap = getAllRealDeviceInfo(configurationModel);
     LOGGER.info("allPlatformDeviceMap=" + allPlatformDeviceMap);
     checkAllRealDevicesAreConnected(configurationModel, allPlatformDeviceMap);
@@ -79,7 +85,12 @@ public class AppiumLabRunner {
   private static Map<String, Object> generateBuildCommands(
       ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)
       throws AppiumLabException {
+    LOGGER.info(
+        "Entering in generateBuildCommands(\n"
+            + "      ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)");
 
+    LOGGER.info("configurationModel=" + configurationModel);
+    LOGGER.info("allPlatformDeviceMap=" + allPlatformDeviceMap);
     Map<String, Object> deviceSpecificData = new LinkedHashMap<String, Object>();
 
     if (configurationModel.getMode().equalsIgnoreCase(RunType.DISTRIBUTED.name())) {
@@ -128,16 +139,12 @@ public class AppiumLabRunner {
 
     } else if (configurationModel.getMode().equalsIgnoreCase(RunType.PARALLEL.name())) {
 
-
       ParallelNodeDataModel parallelNodeDataModel = configurationModel.getParallelNodeDataModel();
-      List<String> testFilesList =
-              parallelNodeDataModel.getTestFiles();
-      List<String> includeTagList =
-              parallelNodeDataModel.getIncludeTags();
-      List<String> excludeTagList =
-              parallelNodeDataModel.getExcludeTags();
+      List<String> testFilesList = parallelNodeDataModel.getTestFiles();
+      List<String> includeTagList = parallelNodeDataModel.getIncludeTags();
+      List<String> excludeTagList = parallelNodeDataModel.getExcludeTags();
 
-      String runningPlatform =parallelNodeDataModel.getPlatformType();
+      String runningPlatform = parallelNodeDataModel.getPlatformType();
 
       List<DeviceModel> allAndroidDeviceList = null;
       List<DeviceModel> allIOSDeviceList = null;
@@ -188,6 +195,10 @@ public class AppiumLabRunner {
         }
       }
     }
+    LOGGER.info("deviceSpecificData=" + deviceSpecificData);
+    LOGGER.info(
+        "Leaving generateBuildCommands(\n"
+            + "      ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)");
 
     return deviceSpecificData;
   }
@@ -199,6 +210,21 @@ public class AppiumLabRunner {
       List<String> includeTagList,
       List<String> excludeTagList,
       String runType) {
+
+    LOGGER.info(
+        "Entering in getNewBuildModel(\n"
+            + "      DeviceModel deviceModel,\n"
+            + "      String environment,\n"
+            + "      List<String> testFilesList,\n"
+            + "      List<String> includeTagList,\n"
+            + "      List<String> excludeTagList,\n"
+            + "      String runType)");
+    LOGGER.info("deviceModel=" + deviceModel);
+    LOGGER.info("environment=" + environment);
+    LOGGER.info("testFilesList=" + testFilesList);
+    LOGGER.info("includeTagList=" + includeTagList);
+    LOGGER.info("excludeTagList=" + excludeTagList);
+    LOGGER.info("runType=" + runType);
 
     String udid = deviceModel.getUdid();
     String platformVersion = deviceModel.getOsVersion();
@@ -224,12 +250,25 @@ public class AppiumLabRunner {
             testFilesList,
             includeTagList,
             excludeTagList);
-
+    LOGGER.info(
+        "Leaving getNewBuildModel(\n"
+            + "      DeviceModel deviceModel,\n"
+            + "      String environment,\n"
+            + "      List<String> testFilesList,\n"
+            + "      List<String> includeTagList,\n"
+            + "      List<String> excludeTagList,\n"
+            + "      String runType)");
+    LOGGER.info("buildModel=" + buildModel);
     return buildModel;
   }
 
   private static List<String> getParallelDataList(
       Map<String, String> parallelDataMap, String attribute) throws AppiumLabException {
+    LOGGER.info(
+        "Entering in getParallelDataList(\n"
+            + "      Map<String, String> parallelDataMap, String attribute)");
+    LOGGER.info("parallelDataMap=" + parallelDataMap);
+    LOGGER.info("attribute=" + attribute);
     String dataWithComma = parallelDataMap.get(ConfigElement.FEATURE.name().toLowerCase());
     String[] dataCommaStrArr = null;
     try {
@@ -238,30 +277,20 @@ public class AppiumLabRunner {
     } catch (Exception e) {
       throw new AppiumLabException("The attribute " + attribute + " not found!!");
     }
+    LOGGER.info(
+        "Leaving getParallelDataList(\n"
+            + "      Map<String, String> parallelDataMap, String attribute)");
     return Arrays.asList(dataCommaStrArr);
-  }
-
-  private static String getEnvironmentFromConfigNode(
-      String node, Map<String, Map<String, Object>> distMap) {
-    Map<String, Object> deviceConfigMap = distMap.get(node);
-    return (String) deviceConfigMap.get(ConfigElement.ENVIRONMENT.name().toLowerCase());
-  }
-
-  private static List<String> getIncludeTagsFromConfigNode(
-      String node, Map<String, Map<String, Object>> distMap) throws AppiumLabException {
-
-    return getNodeAttributeAsAList(node, distMap, ConfigElement.INCLUDE.name().toLowerCase());
-  }
-
-  private static List<String> getExcludeTagsFromConfigNode(
-      String node, Map<String, Map<String, Object>> distMap) throws AppiumLabException {
-
-    return getNodeAttributeAsAList(node, distMap, ConfigElement.EXCLUDE.name().toLowerCase());
   }
 
   private static List<String> getNodeAttributeAsAList(
       String node, Map<String, Map<String, Object>> distMap, String attribute)
       throws AppiumLabException {
+    LOGGER.info(
+        "Entering in getNodeAttributeAsAList(\n"
+            + "      String node, Map<String, Map<String, Object>> distMap, String attribute)");
+    LOGGER.info("distMap=" + distMap);
+    LOGGER.info("attribute=" + attribute);
     String[] allTestsSeparatedByCommaArray = null;
     try {
       Map<String, Object> deviceConfigMap = distMap.get(node);
@@ -270,47 +299,66 @@ public class AppiumLabRunner {
     } catch (Exception e) {
       throw new AppiumLabException("The attribute " + attribute + " not found!!");
     }
+    LOGGER.info(
+        "Leaving getNodeAttributeAsAList(\n"
+            + "      String node, Map<String, Map<String, Object>> distMap, String attribute)");
     return Arrays.asList(allTestsSeparatedByCommaArray);
   }
 
-  private static List<String> getTestFilesFromConfigNode(
-      String node, Map<String, Map<String, Object>> distMap) throws AppiumLabException {
-
-    return getNodeAttributeAsAList(node, distMap, ConfigElement.FEATURE.name().toLowerCase());
-  }
-
   private static int getNewPortIfTaken(int appiumPort) {
+    LOGGER.info("Entering in getNewPortIfTaken(int appiumPort)");
+    LOGGER.info("appiumPort=" + appiumPort);
 
     while ((isPortInTheList(appiumPort, allPortList))) {
       appiumPort++;
     }
     allPortList.add(appiumPort);
+    LOGGER.info("appiumPort=" + appiumPort);
+    LOGGER.info("allPortList=" + allPortList);
+    LOGGER.info("Leaving getNewPortIfTaken(int appiumPort)");
     return appiumPort;
   }
 
   private static boolean isPortInTheList(int appiumPort, ArrayList<Integer> allPortList) {
+    LOGGER.info("Entering in isPortInTheList(int appiumPort, ArrayList<Integer> allPortList) ");
+    LOGGER.info("appiumPort=" + appiumPort);
+    LOGGER.info("allPortList=" + allPortList);
     for (int port : allPortList) {
       if (port == appiumPort) {
+        LOGGER.info("Leaving isPortInTheList(int appiumPort, ArrayList<Integer> allPortList) ");
         return true;
       }
     }
+    LOGGER.info("Leaving isPortInTheList(int appiumPort, ArrayList<Integer> allPortList) ");
     return false;
   }
 
   private static int generateUniquePort(String udId) {
+    LOGGER.info("Entering in generateUniquePort(String udId) ");
+    LOGGER.info("udId=" + udId);
 
     int hashCode = Math.abs(udId.hashCode());
     String first4char = String.valueOf(hashCode).substring(0, 4);
     int port = Integer.parseInt(first4char);
+    LOGGER.info("port=" + port);
+    LOGGER.info("Leaving generateUniquePort(String udId) ");
     return port;
   }
 
   private static String getPlatformNameFromUdid(String udId, List<DeviceModel> allDeviceModelList)
       throws AppiumLabException {
+    LOGGER.info(
+        "Entering in getPlatformNameFromUdid(String udId, List<DeviceModel> allDeviceModelList) ");
+    LOGGER.info("udId=" + udId);
+    LOGGER.info("allDeviceModelList=" + allDeviceModelList);
+
     for (DeviceModel model : allDeviceModelList) {
       String platformName = null;
       if (model.getUdid().equalsIgnoreCase(udId)) {
         platformName = model.getPlatformName();
+        LOGGER.info("platformName=" + platformName);
+        LOGGER.info(
+            "Leaving getPlatformNameFromUdid(String udId, List<DeviceModel> allDeviceModelList) ");
         return platformName;
       }
     }
@@ -319,10 +367,20 @@ public class AppiumLabRunner {
 
   private static String getPlatformVersionFromUdid(
       String udId, List<DeviceModel> allDeviceModelList) throws AppiumLabException {
+    LOGGER.info(
+        "Entering in getPlatformVersionFromUdid(\n"
+            + "      String udId, List<DeviceModel> allDeviceModelList) ");
+    LOGGER.info("udId=" + udId);
+    LOGGER.info("allDeviceModelList=" + allDeviceModelList);
+
     for (DeviceModel model : allDeviceModelList) {
       String platformVersion = null;
       if (model.getUdid().equalsIgnoreCase(udId)) {
         platformVersion = model.getOsVersion();
+        LOGGER.info("platformVersion=" + platformVersion);
+        LOGGER.info(
+            "Leaving getPlatformVersionFromUdid(\n"
+                + "      String udId, List<DeviceModel> allDeviceModelList) ");
         return platformVersion;
       }
     }
@@ -332,6 +390,13 @@ public class AppiumLabRunner {
   private static void checkAllRealDevicesAreConnected(
       ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)
       throws AppiumLabException {
+
+    LOGGER.info(
+        "Entering in checkAllRealDevicesAreConnected(\n"
+            + "      ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)");
+    LOGGER.info("configurationModel=" + configurationModel);
+    LOGGER.info("allPlatformDeviceMap=" + allPlatformDeviceMap);
+
     if (configurationModel.getMode().equalsIgnoreCase(RunType.DISTRIBUTED.name())) {
 
       DistributedNodeDataModel distributedNodeDataModel =
@@ -348,6 +413,9 @@ public class AppiumLabRunner {
       checkAllDevicesAreConnected(
           androidNodeMap, DeviceType.IOS_REAL_DEVICE.name(), allPlatformDeviceMap);
     }
+    LOGGER.info(
+        "Leaving checkAllRealDevicesAreConnected(\n"
+            + "      ConfigurationModel configurationModel, Map<String, List<DeviceModel>> allPlatformDeviceMap)");
   }
 
   private static void checkAllDevicesAreConnected(
@@ -355,8 +423,18 @@ public class AppiumLabRunner {
       String deviceType,
       Map<String, List<DeviceModel>> allPlatformDeviceMap)
       throws AppiumLabException {
+
+    LOGGER.info(
+        "Entering in checkAllDevicesAreConnected(\n"
+            + "      Map<String, DistributedAttributeDataModel> deviceNodeMap,\n"
+            + "      String deviceType,\n"
+            + "      Map<String, List<DeviceModel>> allPlatformDeviceMap)");
+
+    LOGGER.info("deviceNodeMap=" + deviceNodeMap);
+    LOGGER.info("deviceType=" + deviceType);
+    LOGGER.info("allPlatformDeviceMap=" + allPlatformDeviceMap);
+
     for (Map.Entry<String, DistributedAttributeDataModel> entry : deviceNodeMap.entrySet()) {
-      System.out.println(entry.getKey() + "/" + entry.getValue());
       DistributedAttributeDataModel distributedAttributeDataModel = entry.getValue();
       String udidFromConfigFile = distributedAttributeDataModel.getUdId();
       if (!isTheDevicePresent(udidFromConfigFile, allPlatformDeviceMap, deviceType)) {
@@ -364,35 +442,64 @@ public class AppiumLabRunner {
             "The " + deviceType + " with udid " + udidFromConfigFile + " is not connected!!");
       }
     }
+    LOGGER.info(
+        "Leaving checkAllDevicesAreConnected(\n"
+            + "      Map<String, DistributedAttributeDataModel> deviceNodeMap,\n"
+            + "      String deviceType,\n"
+            + "      Map<String, List<DeviceModel>> allPlatformDeviceMap)");
   }
 
   private static boolean isTheDevicePresent(
       String udidFromConfigFile,
       Map<String, List<DeviceModel>> allPlatformDeviceMap,
       String deviceType) {
+
+    LOGGER.info(
+        "Entering in isTheDevicePresent(\n"
+            + "      String udidFromConfigFile,\n"
+            + "      Map<String, List<DeviceModel>> allPlatformDeviceMap,\n"
+            + "      String deviceType)");
+    LOGGER.info("udidFromConfigFile=" + udidFromConfigFile);
+    LOGGER.info("allPlatformDeviceMap=" + allPlatformDeviceMap);
+    LOGGER.info("deviceType=" + deviceType);
+
     List<DeviceModel> allAndroidDeviceModelList = allPlatformDeviceMap.get(deviceType);
     boolean udidPresent = isUdidConstainsInList(udidFromConfigFile, allAndroidDeviceModelList);
+    LOGGER.info("udidPresent=" + udidPresent);
+    LOGGER.info(
+        "Leaving isTheDevicePresent(\n"
+            + "      String udidFromConfigFile,\n"
+            + "      Map<String, List<DeviceModel>> allPlatformDeviceMap,\n"
+            + "      String deviceType)");
     return udidPresent;
   }
 
-  private static String getUdidFromConfigNode(
-      String node, Map<String, Map<String, Object>> distMap) {
-    Map<String, Object> deviceConfigMap = distMap.get(node);
-    return (String) deviceConfigMap.get(ConfigElement.UDID.name().toLowerCase());
-  }
-
   private static boolean isUdidConstainsInList(
-      String udidFromConfigFile, List<DeviceModel> allAndroidDeviceModelList) {
-    for (DeviceModel deviceModel : allAndroidDeviceModelList) {
+      String udidFromConfigFile, List<DeviceModel> deviceModelList) {
+    LOGGER.info(
+        "Entering in isUdidConstainsInList(\n"
+            + "      String udidFromConfigFile, List<DeviceModel> deviceModelList)");
+    LOGGER.info("udidFromConfigFile=" + udidFromConfigFile);
+    LOGGER.info("deviceModelList=" + deviceModelList);
+
+    for (DeviceModel deviceModel : deviceModelList) {
       if (deviceModel.getUdid().equalsIgnoreCase(udidFromConfigFile)) {
+        LOGGER.info(
+            "Leaving isUdidConstainsInList(\n"
+                + "      String udidFromConfigFile, List<DeviceModel> deviceModelList)");
         return true;
       }
     }
+    LOGGER.info(
+        "Leaving isUdidConstainsInList(\n"
+            + "      String udidFromConfigFile, List<DeviceModel> deviceModelList)");
     return false;
   }
 
   private static Map<String, List<DeviceModel>> getAllRealDeviceInfo(
       ConfigurationModel configurationModel) throws AppiumLabException {
+    LOGGER.info("Entering in getAllRealDeviceInfo( ConfigurationModel configurationModel)");
+    LOGGER.info("configurationModel=" + configurationModel);
     boolean isIOS = false;
     boolean isAndroid = false;
     if (configurationModel.getMode().equalsIgnoreCase(RunType.DISTRIBUTED.name().toLowerCase())) {
@@ -402,10 +509,6 @@ public class AppiumLabRunner {
           distributedNodeDataModel.getAndroidNodeMap();
       Map<String, DistributedAttributeDataModel> iOSNodeMap =
           distributedNodeDataModel.getiOSNodeMap();
-
-      LOGGER.info("androidNodeMap=" + androidNodeMap);
-      LOGGER.info("iOSNodeMap=" + iOSNodeMap);
-
       if (androidNodeMap.size() > 0) {
         isAndroid = true;
       }
@@ -417,7 +520,6 @@ public class AppiumLabRunner {
         .getMode()
         .equalsIgnoreCase(RunType.PARALLEL.name().toLowerCase())) {
 
-      Map<String, String> parlMap = configurationModel.getParallelMap();
       ParallelNodeDataModel parallelNodeDataModel = configurationModel.getParallelNodeDataModel();
       String platform = parallelNodeDataModel.getPlatformType();
 
@@ -443,6 +545,8 @@ public class AppiumLabRunner {
       allDeviceMap.put(
           DeviceType.ANDROID_REAL_DEVICE.name(), new AndroidDeviceFinder().getAllRealDevices());
     }
+    LOGGER.info("allDeviceMap=" + allDeviceMap);
+    LOGGER.info("Leaving getAllRealDeviceInfo( ConfigurationModel configurationModel)");
     return allDeviceMap;
   }
 }

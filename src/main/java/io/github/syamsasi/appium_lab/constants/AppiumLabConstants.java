@@ -14,12 +14,5 @@ public interface AppiumLabConstants {
     String ADB_OS_VERSION ="ro.build.version.release";
     String ADB_MANUFACTURE_NAME ="ro.product.model";
     String ADB_UDID_SEPARATOR ="-s";
-
-
-    String MAVEN = "maven";
-    String IOS = "iOS";
-
-    String ANDROID_REAL_DEVICES="ANDROID_REAL_DEVICE";
-    String IOS_REAL_DEVICES="IOS_REAL_DEVICE";
     String COMMA_SEPERATOR = ",";
 }

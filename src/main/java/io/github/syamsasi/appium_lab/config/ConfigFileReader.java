@@ -38,7 +38,7 @@ public final class ConfigFileReader {
    * @throws ParseException
    */
   public static ConfigurationModel readConfigJson(File file) throws AppiumLabException {
-    LOGGER.info("Entering readConfigJson()");
+    LOGGER.info("Entering readConfigJson(File file)");
     LOGGER.info("Reading the config file , " + file);
     JSONParser parser = new JSONParser();
     Object obj = null;
@@ -52,12 +52,10 @@ public final class ConfigFileReader {
     JSONObject jsonObject = (JSONObject) obj;
     ConfigurationModel configurationModel = new ConfigurationModel();
     String mode = (String) jsonObject.get(ConfigElement.MODE.name().toLowerCase());
-    LOGGER.info("Running mode= " + mode);
     ConfigValidator.validateMode(mode);
     configurationModel.setMode(mode);
 
     String environment = (String) jsonObject.get(ConfigElement.ENVIRONMENT.name().toLowerCase());
-    LOGGER.info("Running environment= " + environment);
     ConfigValidator.validateEnvironment(environment);
     configurationModel.setEnvironment(environment);
 
@@ -68,34 +66,26 @@ public final class ConfigFileReader {
       } catch (IOException e) {
         throw new AppiumLabException(e.getMessage());
       }
-      LOGGER.info("distributedMap= " + distributedMap);
       DistributedNodeDataModel distributedNodeDataModel =
           ConfigValidator.validateDistributedData(distributedMap);
       configurationModel.setDistributedNodeDataModel(distributedNodeDataModel);
-      configurationModel.setDistributedMap(distributedMap);
     } else if (mode.equalsIgnoreCase(RunType.PARALLEL.name())) {
       Map<String, String> parallelMap = parseParallelData(jsonObject);
       ParallelNodeDataModel parallelNodeDataModel =
           ConfigValidator.validateParallelDataMap(parallelMap);
-      LOGGER.info("ParallelMap= " + parallelMap);
-      LOGGER.info("parallelNodeDataModel= " + parallelNodeDataModel);
 
-      configurationModel.setParallelMap(parallelMap);
       configurationModel.setParallelNodeDataModel(parallelNodeDataModel);
     }
     LOGGER.info("configurationModel=" + configurationModel);
-
     LOGGER.info("Exiting readConfigJson()");
     return configurationModel;
   }
 
   protected static Map<String, Map<String, Object>> parseDistributedData(JSONObject jsonObject)
       throws IOException, AppiumLabException {
-    LOGGER.info("Entering parseDistributedData()");
-
+    LOGGER.info("Entering parseDistributedData(JSONObject jsonObject)");
     Map distributedMap =
         (Map<String, List<String>>) jsonObject.get(RunType.DISTRIBUTED.name().toLowerCase());
-    LOGGER.info("distributedMap=" + distributedMap);
     Map<String, Map<String, Object>> distributedMapTmp = new LinkedHashMap<>();
     List<String> allNodes = new ArrayList<String>(distributedMap.keySet());
     for (String node : allNodes) {
@@ -108,20 +98,17 @@ public final class ConfigFileReader {
       }
       distributedMapTmp.put(node, jsonMap);
     }
-    LOGGER.info("distributedMapTmp=" + distributedMapTmp);
-    LOGGER.info("Exiting parseDistributedData()");
-
+    LOGGER.info("Exiting parseDistributedData(JSONObject jsonObject)");
     return distributedMapTmp;
   }
 
   protected static Map<String, Object> convertToJavaMap(JSONObject jsonList)
       throws AppiumLabException {
-    LOGGER.info("Entering convertToJavaMap()");
+    LOGGER.info("Entering convertToJavaMap(JSONObject jsonObject)");
     LOGGER.info("jsonList=" + jsonList);
 
     Map<String, Object> jsonMap = new HashMap<String, Object>();
     String jsonMapString = jsonList.toJSONString();
-    LOGGER.info("jsonMapString=" + jsonMapString);
     ObjectMapper mapper = new ObjectMapper();
     try {
       jsonMap = mapper.readValue(jsonMapString, new TypeReference<Map<String, String>>() {});
@@ -134,11 +121,10 @@ public final class ConfigFileReader {
   }
 
   protected static Map<String, String> parseParallelData(JSONObject jsonObject) {
-    LOGGER.info("Entering parseParallelData()");
-    LOGGER.info("jsonObject=" + jsonObject);
+    LOGGER.info("Entering parseParallelData(JSONObject jsonObject)");
     Map parallelMap = (Map<String, String>) jsonObject.get(RunType.PARALLEL.name().toLowerCase());
     LOGGER.info("parallelMap=" + parallelMap);
-    LOGGER.info("Exiting parseParallelData()");
+    LOGGER.info("Exiting parseParallelData(JSONObject jsonObject)");
     return parallelMap;
   }
 }

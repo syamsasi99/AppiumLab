@@ -9,24 +9,6 @@ public class ConfigurationModel {
   private String environment;
   private ParallelNodeDataModel parallelNodeDataModel;
   private DistributedNodeDataModel distributedNodeDataModel;
-  private Map<String, Map<String, Object>> distributedMap;
-  private Map<String, String> parallelMap;
-
-  public Map<String, Map<String, Object>> getDistributedMap() {
-    return distributedMap;
-  }
-
-  public void setDistributedMap(Map<String, Map<String, Object>> distributedMap) {
-    this.distributedMap = distributedMap;
-  }
-
-  public Map<String, String> getParallelMap() {
-    return parallelMap;
-  }
-
-  public void setParallelMap(Map<String, String> parallelMap) {
-    this.parallelMap = parallelMap;
-  }
 
   public String getMode() {
     return mode;
@@ -67,8 +49,6 @@ public class ConfigurationModel {
             ", environment='" + environment + '\'' +
             ", parallelNodeDataModel=" + parallelNodeDataModel +
             ", distributedNodeDataModel=" + distributedNodeDataModel +
-            ", distributedMap=" + distributedMap +
-            ", parallelMap=" + parallelMap +
             '}';
   }
 }

@@ -26,6 +26,8 @@ public class ConfigValidator {
   private ConfigValidator() {}
 
   protected static void validateMode(String mode) throws AppiumLabException {
+    LOGGER.info("Entering in validateMode(String mode)");
+    LOGGER.info("mode=" + mode);
     if (mode == null) {
       throw new AppiumLabException("The mode attribute is missing");
     }
@@ -34,9 +36,12 @@ public class ConfigValidator {
         || mode.equalsIgnoreCase(RunType.AUTO.name()))) {
       throw new AppiumLabException("Invalid mode attribute!!!");
     }
+    LOGGER.info("Leaving validateMode(String mode)");
   }
 
   protected static void validateEnvironment(String environment) throws AppiumLabException {
+    LOGGER.info("Entering in validateEnvironment(String environment)");
+    LOGGER.info("environment=" + environment);
     if (environment == null) {
       throw new AppiumLabException("The environment attribute is missing");
     }
@@ -44,11 +49,15 @@ public class ConfigValidator {
         || environment.equalsIgnoreCase(Environment.PRODUCTION.name()))) {
       throw new AppiumLabException("Invalid environment attribute!!!");
     }
+    LOGGER.info("Leaving validateEnvironment(String environment)");
   }
 
   protected static DistributedNodeDataModel validateDistributedData(
       Map<String, Map<String, Object>> distributedMap) throws AppiumLabException {
-
+    LOGGER.info(
+        "Entering in validateDistributedData(\n"
+            + "      Map<String, Map<String, Object>> distributedMap)");
+    LOGGER.info("distributedMap=" + distributedMap);
     if (distributedMap == null) {
       throw new AppiumLabException("The distributed section can not be null!");
     }
@@ -57,8 +66,6 @@ public class ConfigValidator {
       throw new AppiumLabException("The distributed section can not be empty!");
     }
     List<String> allNodesList = new ArrayList<String>(distributedMap.keySet());
-    LOGGER.info("distributedMap=" + distributedMap);
-    LOGGER.info("allNodesList=" + allNodesList);
     Map<String, DistributedAttributeDataModel> androidNodeMap = new LinkedHashMap<>();
     Map<String, DistributedAttributeDataModel> iOSNodeMap = new LinkedHashMap<>();
     for (String node : allNodesList) {
@@ -98,27 +105,41 @@ public class ConfigValidator {
     DistributedNodeDataModel distributedNodeDataModel =
         new DistributedNodeDataModel(androidNodeMap, iOSNodeMap);
     LOGGER.info("distributedNodeDataModel=" + distributedNodeDataModel);
+    LOGGER.info(
+        "Leaving validateDistributedData(\n"
+            + "      Map<String, Map<String, Object>> distributedMap)");
     return distributedNodeDataModel;
   }
 
   private static List<String> validateIncludeTags(String includeTags) throws AppiumLabException {
+    LOGGER.info("Entering in validateIncludeTags(String includeTags)");
+    LOGGER.info("includeTags=" + includeTags);
+    LOGGER.info("Leaving validateIncludeTags(String includeTags)");
+
     return validateAttributeWithComma(includeTags, ConfigElement.INCLUDE);
   }
 
   private static List<String> validateExcludeTags(String excludeTags) throws AppiumLabException {
+    LOGGER.info("Entering in invalidateExcludeTags(String excludeTags)");
+    LOGGER.info("excludeTags=" + excludeTags);
+    LOGGER.info("Leaving invalidateExcludeTags(String excludeTags)");
+
     return validateAttributeWithComma(excludeTags, ConfigElement.EXCLUDE);
   }
 
   private static List<String> validateAttributeWithComma(
       String attributeWithComma, ConfigElement configElement) throws AppiumLabException {
-
+    LOGGER.info(
+        "Entering in validateAttributeWithComma(\n"
+            + "      String attributeWithComma, ConfigElement configElement)");
+    LOGGER.info("attributeWithComma=" + attributeWithComma);
+    LOGGER.info("configElement=" + configElement);
     if (attributeWithComma == null) {
       throw new AppiumLabException(
           "The attribute " + configElement.name().toLowerCase() + " should not be empty!");
     }
     String[] attributeArray = attributeWithComma.split(AppiumLabConstants.COMMA_SEPERATOR);
     List<String> attributeArrayList = Arrays.asList(attributeArray);
-    LOGGER.info("attributeArrayList=" + attributeArrayList);
     for (String attr : attributeArrayList) {
       if (attr.trim().equalsIgnoreCase("")) {
         throw new AppiumLabException(
@@ -130,32 +151,49 @@ public class ConfigValidator {
       throw new AppiumLabException(
           "The " + configElement.name().toLowerCase() + " contains duplicate data!!");
     }
-
+    LOGGER.info("attributeArrayList=" + attributeArrayList);
+    LOGGER.info(
+        "Leaving validateAttributeWithComma(\n"
+            + "      String attributeWithComma, ConfigElement configElement)");
     return attributeArrayList;
   }
 
   private static boolean isListContainsDuplicates(List<String> list) {
+    LOGGER.info("Entering in isListContainsDuplicates(List<String> list) ");
+    LOGGER.info("list=" + list);
+
     Set<String> set = new HashSet<String>(list);
 
     if (set.size() < list.size()) {
+      LOGGER.info("Leaving isListContainsDuplicates(List<String> list) ");
       return true;
     }
+    LOGGER.info("Leaving isListContainsDuplicates(List<String> list) ");
     return false;
   }
 
   private static List<String> validateTestFiles(String testFiles) throws AppiumLabException {
+    LOGGER.info("Entering in validateTestFiles(String testFiles) ");
+    LOGGER.info("testFiles=" + testFiles);
+    LOGGER.info("Leaving validateTestFiles(String testFiles) ");
     return validateAttributeWithComma(testFiles, ConfigElement.FEATURE);
   }
 
   private static void validateUdid(String udId) throws AppiumLabException {
+    LOGGER.info("Entering in validateUdid(String udId) ");
+    LOGGER.info("udId=" + udId);
+
     if (udId == null) {
       throw new AppiumLabException(
           "The attribute " + ConfigElement.UDID.name().toLowerCase() + " should not be empty!");
     }
+    LOGGER.info("Leaving validateUdid(String udId) ");
   }
 
   protected static ParallelNodeDataModel validateParallelDataMap(Map<String, String> parallelMap)
       throws AppiumLabException {
+    LOGGER.info("Entering in validateParallelDataMap(Map<String, String> parallelMap) ");
+    LOGGER.info("parallelMap=" + parallelMap);
 
     if (parallelMap == null) {
       throw new AppiumLabException("The parallel section can not be null!");
@@ -178,10 +216,15 @@ public class ConfigValidator {
     ParallelNodeDataModel parallelNodeDataModel =
         new ParallelNodeDataModel(testFilesList, includeTagList, excludeTagList, platFormType);
     LOGGER.info("parallelNodeDataModel=" + parallelNodeDataModel);
+    LOGGER.info("Leaving validateParallelDataMap(Map<String, String> parallelMap) ");
+
     return parallelNodeDataModel;
   }
 
   private static void validatePlatformType(String platFormType) throws AppiumLabException {
+    LOGGER.info("Entering in validatePlatformType(String platFormType) ");
+    LOGGER.info("platFormType=" + platFormType);
+
     if (platFormType == null) {
       throw new AppiumLabException(
           "The attribute " + ConfigElement.PLATFORM.name().toLowerCase() + " should not be empty!");
@@ -200,5 +243,6 @@ public class ConfigValidator {
               + " or "
               + Platform.BOTH.name().toLowerCase());
     }
+    LOGGER.info("Leaving validatePlatformType(String platFormType) ");
   }
 }
